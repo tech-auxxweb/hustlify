@@ -227,8 +227,16 @@ section {
   font-size: 28px;
   font-weight: 900;
   text-transform: capitalize;
-  color: #111;
+  color: gray; /* Initially gray */
+  transition: all 0.3s ease-in-out; /* Smooth animation */
 }
+
+.section-heading h4:hover {
+  color: blue; /* Turns blue on hover */
+  transform: scale(1.05); /* Slightly increases in size */
+  cursor: pointer;
+}
+
 
 .section-heading h4 em {
   font-style: normal;
@@ -767,12 +775,15 @@ services
 ---------------------------------------------
 */ 
 
+
 .services .item {
   border-radius: 15px;
   text-align: center;
   padding: 50px 30px;
   margin: 15px;
   transition: all .3s;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.06);
+  /* width: ; */
 }
 
 .services .item:hover {
