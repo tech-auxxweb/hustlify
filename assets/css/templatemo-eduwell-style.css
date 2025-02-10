@@ -786,6 +786,7 @@ color:white
 .carousel-inner {
   display: flex;
   flex-direction: column;
+  height: auto;
   transition: transform 1s ease-in-out;
 }
 
@@ -811,7 +812,7 @@ color:white
 /* Responsive */
 @media (max-width: 768px) {
   .text-carousel {
-    height: 60px;
+    height: 400px;
   }
   .carousel-inner h2 {
     font-size: 40px;
