@@ -31,6 +31,10 @@
   --></head>
 
   <body>
+    <div id="toast" class="toast">
+   <span id="toast-message"></span> 
+   <span id="toast-close" class="toast-close">&#10006;</span> <!-- Close button -->
+ </div>
     <!-- ***** Header Area Start ***** -->
     <header class="header-area header-sticky">
       <div class="container">
@@ -671,7 +675,7 @@
             </div>
           </div>
           <div class="col-lg-4">
-            <form id="contactForm">
+            <form id="contactForm1">
               <div class="row">
                 <div class="col-lg-12">
                   <div class="section-heading">
@@ -738,10 +742,20 @@
                   <fieldset>
                     <button
                       type="submit"
-                      id="form-submit"
+                      id="rs-btn1"
                       class="main-button-gradientb"
+                      
                     >
                       Send Message
+                    </button>
+                    <button
+                    style="display: none;"
+                      type="submit"
+                      id="rloading1"
+                      class="main-button-gradientb"
+                      disabled
+                    >
+                     submitting...
                     </button>
                   </fieldset>
                 </div>
@@ -809,6 +823,7 @@
                   Join
                   <em>Now</em>
                 </h4>
+                <!-- <h5 style="color: green; display: none;" id="sub-sucess">form submitted successfully</h5> -->
               </div>
             </div>
             <div class="col-lg-12">
@@ -821,7 +836,9 @@
                   placeholder="Full Name"
                   autocomplete="on"
                   required
+              
                 />
+                 <small class="error-message" style="color: red; display: none;"></small>
               </fieldset>
             </div>
             <div class="col-lg-12">
@@ -832,6 +849,7 @@
                   id="phoneNumber"
                   placeholder="Your PhoneNumber"
                   required
+               
                 />
               </fieldset>
             </div>
@@ -840,7 +858,6 @@
                 <select
                   name="service"
                   id="service"
-                  required
                   style="margin-bottom: 10px !important;"
                 >
                   <option value="" disabled selected>Select Course</option>
@@ -859,6 +876,7 @@
                   name="message"
                   id="message"
                   placeholder="Your Message"
+                  required
                 ></textarea>
               </fieldset>
             </div>
@@ -866,10 +884,19 @@
               <fieldset>
                 <button
                   type="submit"
-                  id="form-submit"
+                  id="rs-btn"
                   class="main-button-gradientb"
                 >
                   Send Message
+                </button>
+                <button
+                style="display: none;"
+                  type="submit"
+                  id="rloading"
+                  class="main-button-gradientb"
+                  disabled
+                >
+                 submitting...
                 </button>
               </fieldset>
             </div>
@@ -1076,46 +1103,13 @@
         $('.contactForm').on('submit', function (e) {
           e.preventDefault() // Prevent the form from submitting the traditional way
 
-          const fields = [
-            'name',
-            'phoneNumber',
-            'service',
-            'message',
-          ]
-
-          let isValid = true // Flag to track validation status
-
-          // Loop through fields to validate them
-          fields.forEach((fieldId) => {
-            const field = $(`#${fieldId}`)
-           const value = field.val().trim()
-            if (!value) {
-              isValid = false
-              field.css('border-color', 'red') // Highlight invalid fields
-              field.next('.error-message').text('This field is required').show()
-            } else if (
-              fieldId === 'businessEmail' &&
-              !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-            ) {
-              isValid = false
-              field.css('border-color', 'red') // Highlight invalid fields
-              field
-                .next('.error-message')
-                .text('Enter a valid email address')
-                .show()
-            } else {
-              field.css('border-color', 'green') // Mark valid fields
-              field.next('.error-message').hide()
-            }
-          })
-
-          // If validation fails, stop submission
-          if (!isValid) return
 
           // Define the submit button and loading spinner
           const rsubmitButton = document.getElementById('rs-btn')
           const rloadingButton = document.getElementById('rloading')
           const toast = document.getElementById('toast')
+          const sToast = document.getElementById('sub-sucess')
+          var modal = document.getElementById('contactModal')
 
           // Show the loading spinner and hide the submit button
           if (rsubmitButton) rsubmitButton.style.display = 'none'
@@ -1124,17 +1118,23 @@
           // Perform the AJAX request
           $.ajax({
             url:
-              'ttps://script.google.com/macros/s/AKfycbzRIxwZB1rpXoo03rhRQd7VnK8w_rPT0ScSOZPYXK-uI5Wa1WXsUWyOBRgd4zgx7qT5yA/exec',
+              'https://script.google.com/macros/s/AKfycbxA3QCD39h3skkYMXaZKKPW-hp2Wk4sP7Jl90Wn4k-GqJ9r9WvCIgC67xRHhp0Gxvgk/exec',
             data: $('.contactForm').serialize(),
             method: 'post',
             success: function (response) {
-              $('#client')[0].reset() // Reset form fields
+              $('#contactForm')[0].reset() // Reset form fields\
+              // sToast.style.display="block"
+              setTimeout(function () {
+                    modal.style.display = 'none'
+                  
+                }, 1000)
               if (toast) {
                 toast.classList.add('show')
                 toast.textContent =
                   'Contact form submitted successfully'
                 setTimeout(function () {
                   toast.classList.remove('show')
+
                 }, 3000)
               }
 
@@ -1190,217 +1190,94 @@
           })
         })
       })
-
       $(document).ready(function () {
-        const showError = (input, message) => {
-          const errorMessage = input.nextElementSibling
-          if (errorMessage) {
-            errorMessage.textContent = message
-            errorMessage.style.display = 'block'
-          }
-          input.style.borderColor = 'red'
+  $('#contactForm1').on('submit', function (e) {
+    e.preventDefault(); // Prevent default form submission
+
+    // Define the submit button and loading spinner
+    const rsubmitButton = document.getElementById('rs-btn1');
+    const rloadingButton = document.getElementById('rloading1');
+    const toast = document.getElementById('toast');
+
+    // Show the loading spinner and hide the submit button
+    if (rsubmitButton) rsubmitButton.style.display = 'none';
+    if (rloadingButton) rloadingButton.style.display = 'block';
+
+    // Perform the AJAX request
+    $.ajax({
+      url: 'https://script.google.com/macros/s/AKfycbxA3QCD39h3skkYMXaZKKPW-hp2Wk4sP7Jl90Wn4k-GqJ9r9WvCIgC67xRHhp0Gxvgk/exec',
+      data: $('#contactForm1').serialize(),
+      method: 'POST',
+      success: function (response) {
+        $('#contactForm1')[0].reset(); // Reset form fields
+
+        if (toast) {
+          toast.classList.add('show');
+          toast.textContent = 'Contact form submitted successfully';
+          setTimeout(() => {
+            toast.classList.remove('show');
+          }, 3000);
         }
 
-        const hideError = (input) => {
-          const errorMessage = input.nextElementSibling
-          if (errorMessage) {
-            errorMessage.style.display = 'none'
-          }
-          input.style.borderColor = 'green'
+        // Show the submit button again and hide the loading spinner
+        if (rsubmitButton) rsubmitButton.style.display = 'block';
+        if (rloadingButton) rloadingButton.style.display = 'none';
+
+        // Reset field styles
+        const fields = [
+          'clientName',
+          'businessName',
+          'businessEmail',
+          'businessPhoneNumber',
+          'referralCode',
+          'requirement',
+        ];
+        fields.forEach((fieldId) => {
+          $(`#${fieldId}`).css('border-color', '');
+        });
+      },
+      error: function (err) {
+        // Hide loading spinner and show error message
+        if (rloadingButton) rloadingButton.style.display = 'none';
+        if (toast) {
+          toast.classList.add('show');
+          toast.style.backgroundColor = '#dc3545'; // Red for error
+          toast.textContent = 'Something went wrong. Please try again.';
+          setTimeout(() => {
+            toast.classList.remove('show');
+          }, 3000);
         }
 
-        const validateField = (field) => {
-          const fieldId = field.id
-          const value = field.value.trim()
-          let isValid = true
+        // Show the submit button again
+        if (rsubmitButton) rsubmitButton.style.display = 'block';
+      },
+    });
+  });
 
-          switch (fieldId) {
-            case 'name':
-              if (!value) {
-                showError(field, 'Name is required')
-                isValid = false
-              } else {
-                hideError(field)
-              }
-              break
+  // Attach live validation on input focus and typing
+  const fields = [
+    'clientName',
+    'businessName',
+    'businessEmail',
+    'businessPhoneNumber',
+    'referralCode',
+    'requirement',
+  ];
+  fields.forEach((fieldId) => {
+    $(`#${fieldId}`).on('input focus', function () {
+      const value = $(this).val().trim();
+      if (value) {
+        $(this).css('border-color', 'green');
+        $(this).next('.error-message').hide();
+      } else {
+        $(this).css('border-color', 'red');
+        $(this).next('.error-message').text('This field is required').show();
+      }
+    });
+  });
+});
 
-            case 'email':
-              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-              if (!value || !emailRegex.test(value)) {
-                showError(field, 'Enter a valid email address')
-                isValid = false
-              } else {
-                hideError(field)
-              }
-              break
 
-            case 'phoneNumber':
-              const phoneRegex = /^[0-9]{10}$/
-              if (!value || !phoneRegex.test(value)) {
-                showError(field, 'Enter a valid 10-digit phone number')
-                isValid = false
-              } else {
-                hideError(field)
-              }
-              break
-          }
-
-          return isValid
-        }
-
-        // Attach focus and input event for live validation
-        $('#signup input').on('focus input', function () {
-          validateField(this)
-        })
-
-        // Form submission
-        $('#signup').on('submit', function (e) {
-          e.preventDefault() // Prevent form submission
-
-          const fields = ['name', 'email', 'phoneNumber']
-          let isFormValid = true
-
-          // Validate all fields
-          fields.forEach((fieldId) => {
-            const field = document.getElementById(fieldId)
-            if (!validateField(field)) {
-              isFormValid = false
-            }
-          })
-
-          if (isFormValid) {
-            const btn = document.getElementById('s-btn')
-            const loading = document.getElementById('loading')
-            const toast = document.getElementById('toast')
-
-            // Show loading spinner
-            btn.style.display = 'none'
-            loading.style.display = 'block'
-
-            $.ajax({
-              url:
-                'https://script.google.com/macros/s/AKfycbyOEo7aKNq0lSOL6j7eicYs7Jb3qNdLNHsp8-_8k4PYkw-feZ8szOOwloDiy3V-pzgWAg/exec',
-              data: $('#signup').serialize(),
-              method: 'POST',
-              success: function () {
-                $('#signup')[0].reset() // Reset form
-                if (toast) {
-                  toast.classList.add('show')
-                  toast.style.backgroundColor = '#28a745' // Green for success
-                  toast.innerHTML =
-                    'Signup successful,<br>and you will receive your referral code in your email within 24 hours.'
-                  setTimeout(() => toast.classList.remove('show'), 4000)
-                }
-                btn.style.display = 'block'
-                loading.style.display = 'none'
-              },
-              error: function () {
-                if (toast) {
-                  toast.classList.add('show')
-                  toast.style.backgroundColor = '#dc3545' // Red for error
-                  toast.textContent = 'Something went wrong. Please try again.'
-                  setTimeout(() => toast.classList.remove('show'), 3000)
-                }
-                btn.style.display = 'block'
-                loading.style.display = 'none'
-              },
-            })
-          }
-        })
-      })
-
-      $(document).ready(function () {
-        const showError = (input, message) => {
-          const errorMessage = input.nextElementSibling
-          if (errorMessage) {
-            errorMessage.textContent = message
-            errorMessage.style.display = 'block'
-          }
-          input.style.borderColor = 'red'
-        }
-
-        const hideError = (input) => {
-          const errorMessage = input.nextElementSibling
-          if (errorMessage) {
-            errorMessage.style.display = 'none'
-          }
-          input.style.borderColor = 'green'
-        }
-
-        const validateEmail = (emailField) => {
-          const email = emailField.value.trim()
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-          if (!email) {
-            showError(emailField, 'Email is required')
-            return false
-          } else if (!emailRegex.test(email)) {
-            showError(emailField, 'Enter a valid Email')
-            return false
-          } else {
-            hideError(emailField)
-            return true
-          }
-        }
-
-        $('#request').submit(function (e) {
-          e.preventDefault() // Prevent default form submission
-
-          const emailField = document.getElementById('reqemail')
-          const isEmailValid = validateEmail(emailField)
-
-          // Proceed only if the email is valid
-          if (isEmailValid) {
-            const reqloading = document.getElementById('reqloading')
-            const reqbtn = document.getElementById('reqs-btn')
-            const toast = document.getElementById('toast')
-
-            // Show loading spinner
-            reqloading.style.display = 'block'
-            reqbtn.style.display = 'none'
-
-            $.ajax({
-              url:
-                'https://script.google.com/macros/s/AKfycbyWKtdF04RBvWHxrRNOThvMaH3uca2KehkjTkC-jj1mEuUCH1e-B-RsvOu32-YJ5nx6qw/exec',
-              data: $('#request').serialize(),
-              method: 'POST',
-              success: function () {
-                // Show success toast message
-                if (toast) {
-                  toast.classList.add('show')
-                  toast.style.backgroundColor = '#28a745' // Green for success
-                  toast.innerHTML =
-                    'Request successful,<br>and you will receive your Referral History in your email within 24 hours.'
-                  setTimeout(() => toast.classList.remove('show'), 4000)
-                }
-
-                // Clear form fields
-                $('#request')[0].reset()
-
-                reqbtn.style.display = 'block'
-                reqloading.style.display = 'none'
-              },
-              error: function () {
-                // Show error toast message
-                if (toast) {
-                  toast.classList.add('show')
-                  toast.style.backgroundColor = '#dc3545' // Red for error
-                  toast.textContent = 'Something went wrong. Please try again.'
-                  setTimeout(() => toast.classList.remove('show'), 3000)
-                }
-
-                reqloading.style.display = 'none'
-                reqbtn.style.display = 'block'
-              },
-            })
-          }
-        })
-
-        // Attach live validation to the email field
-        $('#reqemail').on('input focus', function () {
-          validateEmail(this)
-        })
-      })
     </script>
   </body>
 </html>
